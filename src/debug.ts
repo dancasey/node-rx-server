@@ -9,7 +9,7 @@ const insp = (obj: any) => inspect(obj, {colors: true, depth: 2});
  */
 
 const socketObserver = {
-  next: (data: Buffer) => console.log(data.toString()),
+  next: (data: Buffer) => console.log(insp(data.toString())),
   error: (err: any) => console.error(err),
   complete: () => console.log("observableFromStream complete"),
 };
@@ -30,7 +30,7 @@ setTimeout(() => {
 
 // push data to socket
 let socketClient: net.Socket = net.connect({port: 1234}, () => {
-  socketClient.write(Buffer.from("hello"));
+  socketClient.write(Buffer.from("hello: "));
   socketClient.write(Buffer.from("observableFromStream"));
   socketClient.end();
 });
@@ -42,7 +42,7 @@ let socketClient: net.Socket = net.connect({port: 1234}, () => {
 
 const serverObserver = {
   next: (data: rxs.IRxSocket) =>
-  console.log(`createRxServer: ${insp(data.socket.address())}, ${data.buffer.toString()}`),
+  console.log(`createRxServer: ${insp(data.socket.address())}, ${insp(data.buffer.toString())}`),
   error: (err: any) => console.error(err),
   complete: () => console.log("createRxServer complete"),
 };
@@ -59,7 +59,7 @@ setTimeout(() => {
 
 // push data to server
 let serverClient: net.Socket = net.connect({port: 1235}, () => {
-  serverClient.write(Buffer.from("hello"));
+  serverClient.write(Buffer.from("hello: "));
   serverClient.write(Buffer.from("createRxServer"));
   serverClient.end();
 });
