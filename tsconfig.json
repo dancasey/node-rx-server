@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "outDir": "dist",
+    "declaration": true
+  },
+  "files": [
+    "typings/index.d.ts",
+    "src/rxserver.ts",
+    "src/test.ts",
+    "src/debug.ts"
+  ]
+}

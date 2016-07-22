@@ -1,0 +1,41 @@
+{
+  "name": "node-rx-server",
+  "version": "1.0.0",
+  "description": "Wraps Node.js net.Server in an observable with RxJS 5",
+  "main": "dist/rxserver.js",
+  "scripts": {
+    "test": "tsc && ava",
+    "prepublish": "tsc"
+  },
+  "author": "Dan Casey <dc181@icloud.com> (https://github.com/dancasey)",
+  "license": "PDDL-1.0",
+  "dependencies": {
+    "rxjs": "^5.0.0-beta.10"
+  },
+  "typings": "dist/rxserver.d.ts",
+  "homepage": "https://github.com/dancasey/node-rx-server#readme",
+  "bugs": {
+    "url": "https://github.com/dancasey/node-rx-server/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dancasey/node-rx-server.git"
+  },
+  "keywords": [
+    "rx",
+    "rxjs",
+    "reactivex",
+    "server",
+    "node.js"
+  ],
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "typescript": "^2.0.0"
+  },
+  "ava": {
+    "files": [
+      "dist/test.js"
+    ],
+    "verbose": true
+  }
+}
