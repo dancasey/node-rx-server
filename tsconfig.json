@@ -9,7 +9,6 @@
     "declaration": true
   },
   "files": [
-    "typings/index.d.ts",
     "src/rxserver.ts",
     "src/test.ts",
     "src/debug.ts"

@@ -4,7 +4,7 @@
   "description": "Wraps Node.js net.Server in an observable with RxJS 5",
   "main": "dist/rxserver.js",
   "scripts": {
-    "build": "typings install && tsc",
+    "build": "tsc",
     "test": "npm run build && ava",
     "prepublish": "npm run build"
   },
@@ -30,9 +30,9 @@
     "node.js"
   ],
   "devDependencies": {
-    "ava": "^0.15.2",
-    "typescript": "^2.0.0",
-    "typings": "^1.3.2"
+    "@types/node": "^6.0.34",
+    "ava": "^0.16.0",
+    "typescript": "^2.0.0"
   },
   "ava": {
     "files": [
