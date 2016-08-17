@@ -13,6 +13,9 @@
   "dependencies": {
     "rxjs": "^5.0.0-beta.10"
   },
+  "files": [
+    "dist"
+  ],
   "typings": "dist/rxserver.d.ts",
   "homepage": "https://github.com/dancasey/node-rx-server#readme",
   "bugs": {
