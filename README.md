@@ -1,6 +1,8 @@
 # node-rx-server
 
-[![Build Status](https://travis-ci.org/dancasey/node-rx-server.svg?branch=master)](https://travis-ci.org/dancasey/node-rx-server)
+[![Build Status](https://travis-ci.org/dancasey/node-rx-server.svg?branch=wip-connection)](https://travis-ci.org/dancasey/node-rx-server)
+
+:construction: This branch is a WIP! (not on npm; instructions below not updated) :construction:
 
 Wraps Node.js net.Server in an observable with RxJS 5.
 
