@@ -27,38 +27,36 @@ export function observableFromStream<T>(stream: Readable): Observable<T> {
   }).share();
 }
 
-export interface IRxSocket {
+export interface Connection {
   socket: Socket;
-  buffer: Buffer;
+  data: Observable<Buffer>;
 };
 
 /**
  * Wraps Node.js net.Server in a higher-order Observable
- * Each connection will emit a new Observable which yields `{socket, buffer}`
+ * Each connection will emit a new Observable of `{socket, data}`,
+ * where `socket` is the Socket of the connection `data` is an Observable of the Buffer
  * @param {net.ListenOptions} options Options to pass to net_Server.listen()
- * @returns {Observable<IRxSocket>}
+ * @returns {Observable<Connection>}
  */
-export function createRxServer(options: ListenOptions): Observable<Observable<IRxSocket>> {
-  let s = createServer();
-  return Observable.create(function (observer: Observer<Observable<IRxSocket>>) {
+export function createRxServer(options: ListenOptions): Observable<Connection> {
+  let server = createServer();
+  return Observable.create((observer: Observer<Connection>) => {
     const connectionHandler = (socket: Socket) => {
-      let os: Observable<IRxSocket>;
-      os = observableFromStream<Buffer>(socket).map(obsBuf => {
-        return {socket, buffer: obsBuf};
-      });
-      observer.next(os);
+      const data = observableFromStream<Buffer>(socket);
+      observer.next({socket, data});
     };
     const errorHandler = (err: any) => observer.error(err);
     const endHandler = () => observer.complete();
-    s.on("connection", connectionHandler);
-    s.on("error", errorHandler);
-    s.on("close", endHandler);
-    s.listen(options);
+    server.on("connection", connectionHandler);
+    server.on("error", errorHandler);
+    server.on("close", endHandler);
+    server.listen(options);
     return function() {
-      s.close();
-      s.removeListener("connection", connectionHandler);
-      s.removeListener("error", errorHandler);
-      s.removeListener("close", endHandler);
+      server.close();
+      server.removeListener("connection", connectionHandler);
+      server.removeListener("error", errorHandler);
+      server.removeListener("close", endHandler);
     };
   }).share();
 }

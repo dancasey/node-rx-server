@@ -2,6 +2,8 @@
   "extends": "tslint:recommended",
   "rules": {
     "object-literal-sort-keys": false,
-    "no-console": [false]
+    "interface-name": [
+      true, "never-prefix"
+    ]
   }
 }

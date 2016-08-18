@@ -1,3 +1,4 @@
+/* tslint:disable:no-console */
 import * as rxs from "./rxserver";
 import * as net from "net";
 import {inspect} from "util";
@@ -41,14 +42,13 @@ let socketClient: net.Socket = net.connect({port: 1234}, () => {
  */
 
 const serverObserver = {
-  next: (data: rxs.IRxSocket) =>
-  console.log(`createRxServer: ${insp(data.socket.address())}, ${insp(data.buffer.toString())}`),
+  next: (data: rxs.Connection) =>
+    console.log(`createRxServer: ${insp(data.socket.address())}`),
   error: (err: any) => console.error(err),
   complete: () => console.log("createRxServer complete"),
 };
 
 let rxserver = rxs.createRxServer({port: 1235})
-  .mergeAll()
   .subscribe(serverObserver);
 
 // close server

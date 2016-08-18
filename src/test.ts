@@ -12,17 +12,15 @@ function runClient() {
     client.end();
   });
 }
-setTimeout(runClient, 300);
+setTimeout(runClient, 100);
 
 /** test createRxServer() */
-test.cb(function testRxServer(t) {
+test.cb("createRxServer gets connections, data", t => {
   t.plan(1);
-  rxs.createRxServer({port: 1234})
-    .mergeAll()
-    .pluck("buffer")
-    .map(b => b.toString())
-    .subscribe(str => {
-      t.is(str, "hello");
+  rxs.createRxServer({port: 1234}).subscribe(c => {
+    c.data.subscribe(d => {
+      t.is(d.toString(), "hello");
       t.end();
     });
+  });
 });
