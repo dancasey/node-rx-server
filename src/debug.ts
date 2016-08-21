@@ -2,6 +2,7 @@
 import * as rxs from "./rxserver";
 import * as net from "net";
 import {inspect} from "util";
+import {Observable} from "rxjs";
 const insp = (obj: any) => inspect(obj, {colors: true, depth: 2});
 
 /**
@@ -41,9 +42,20 @@ let socketClient: net.Socket = net.connect({port: 1234}, () => {
  *
  */
 
+const connectionObserver = {
+  next: (c: rxs.Connection) => {
+    if (c.buffer) {
+      console.log(`createRxServer received ${insp(c.buffer.toString())} from ${insp(c.socket.address())}`);
+    } else {
+      console.log(`createRxServer connection from ${insp(c.socket.address())}`);
+    }
+  },
+  error: (err: any) => console.error(err),
+  complete: () => console.log("createRxServer connection closed"),
+};
+
 const serverObserver = {
-  next: (data: rxs.Connection) =>
-    console.log(`createRxServer: ${insp(data.socket.address())}`),
+  next: (connection: Observable<rxs.Connection>) => connection.subscribe(connectionObserver),
   error: (err: any) => console.error(err),
   complete: () => console.log("createRxServer complete"),
 };

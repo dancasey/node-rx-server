@@ -18,9 +18,11 @@ setTimeout(runClient, 100);
 test.cb("createRxServer gets connections, data", t => {
   t.plan(1);
   rxs.createRxServer({port: 1234}).subscribe(c => {
-    c.data.subscribe(d => {
-      t.is(d.toString(), "hello");
-      t.end();
+    c.subscribe(d => {
+      if (d.buffer) {
+        t.is(d.buffer.toString(), "hello");
+        t.end();
+      }
     });
   });
 });

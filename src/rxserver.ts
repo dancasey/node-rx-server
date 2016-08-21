@@ -27,24 +27,43 @@ export function observableFromStream<T>(stream: Readable): Observable<T> {
   }).share();
 }
 
+/**
+ * @typedef {Object} Connection
+ * @property {Socket} socket
+ * @property {Buffer} [buffer] `undefined` upon new connection
+ */
 export interface Connection {
   socket: Socket;
-  data: Observable<Buffer>;
+  buffer?: Buffer;
 };
 
 /**
  * Wraps Node.js net.Server in a higher-order Observable
- * Each connection will emit a new Observable of `{socket, data}`,
- * where `socket` is the Socket of the connection `data` is an Observable of the Buffer
+ * Each connection will emit a new Observable of `{socket, buffer?}`,
+ * where `socket` is the Socket of the connection `buffer` is the Buffer
+ *
+ * Notes:
+ * - `buffer` is not present if it is a new connection (no data received yet)
+ * - Inner Observable will `complete` when connection is ended
+ * - Unsubscribing all from outer Observable will stop server (it is refcounted via `share`)
+ * - Outer Observable error will `error` the Observable (and therefore end it)
+ * - Inner Observable error will `error` the Observable (and therefore end it; outer will continue)
+ *
+ * Therefore, be careful if you `mergeAll()` the outer (server) Observable, as any error or
+ * disconnect on an inner (Connection) Observable will shut down the server and all its connections.
+ *
  * @param {net.ListenOptions} options Options to pass to net_Server.listen()
  * @returns {Observable<Connection>}
  */
-export function createRxServer(options: ListenOptions): Observable<Connection> {
+export function createRxServer(options: ListenOptions): Observable<Observable<Connection>> {
   let server = createServer();
-  return Observable.create((observer: Observer<Connection>) => {
+  return Observable.create((observer: Observer<Observable<Connection>>) => {
     const connectionHandler = (socket: Socket) => {
-      const data = observableFromStream<Buffer>(socket);
-      observer.next({socket, data});
+      const newConnection: Connection = {socket, buffer: undefined};
+      const newData: Observable<Connection> = observableFromStream<Buffer>(socket)
+        .map(buffer => ({socket, buffer}));
+      const connection: Observable<Connection> = newData.startWith(newConnection);
+      observer.next(connection);
     };
     const errorHandler = (err: any) => observer.error(err);
     const endHandler = () => observer.complete();
